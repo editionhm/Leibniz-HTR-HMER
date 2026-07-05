@@ -8,9 +8,10 @@ from PIL import Image
 
 # Read configuration from environment
 MOCK_MODE = os.getenv("MOCK_MODE", "true").lower() == "true"
-MODEL_NAME_OR_PATH = os.getenv("MODEL_NAME_OR_PATH", "Qwen/Qwen2-VL-2B-Instruct")
+MODEL_NAME_OR_PATH = os.getenv("MODEL_NAME_OR_PATH", "phxember/Uni-MuMER-Qwen3.5-2B")
 LORA_ADAPTER_PATH = os.getenv("LORA_ADAPTER_PATH", "")
 DEVICE = os.getenv("DEVICE", "cuda")
+
 LOAD_IN_4BIT = os.getenv("LOAD_IN_4BIT", "true").lower() == "true"
 MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS", "512"))
 TEMPERATURE = float(os.getenv("TEMPERATURE", "0.0"))
