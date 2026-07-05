@@ -12,8 +12,7 @@ services:
       - BACKEND_PORT=8000
       - MOCK_MODE=${MOCK_MODE:-false}
       - MODEL_NAME_OR_PATH=${MODEL_NAME_OR_PATH:-phxember/Uni-MuMER-Qwen3.5-2B}
-      - LORA_ADAPTER_PATH=${LORA_ADAPTER_PATH:-}
-
+      - LORA_ADAPTER_PATH=${LORA_ADAPTER_PATH:-OmniGnosis/Leibniz-HTR-HMER-Adapter}
       - DEVICE=${DEVICE:-cuda}
       - LOAD_IN_4BIT=${LOAD_IN_4BIT:-true}
       - MAX_NEW_TOKENS=${MAX_NEW_TOKENS:-512}
