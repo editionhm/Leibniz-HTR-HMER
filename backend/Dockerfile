@@ -13,19 +13,17 @@ COPY frontend/ ./
 RUN npm run build
 
 # --- STAGE 2: Python FastAPI Backend Runner ---
-# Default to python:3.10-slim.
-# NOTE: If you are running GPU inference inside Docker on Coolify:
-# You can replace this base image with a CUDA-ready image like:
-# FROM nvcr.io/nvidia/pytorch:23.10-py3
-FROM python:3.10-slim
+# Use a pre-built PyTorch CUDA image. This avoids downloading 3GB of PyTorch from PyPI
+# and ensures GPU support works out of the box on the RTX 3090.
+FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
 
 WORKDIR /app
 
-# Install system dependencies (e.g. git for clone, libgl for OpenCV/PIL if needed)
+# Install git (needed for Hugging Face and potential git installs)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
     git \
-    && rm -rf /lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
+
 
 # Install python dependencies
 COPY backend/requirements.txt ./
