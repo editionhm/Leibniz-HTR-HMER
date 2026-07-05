@@ -47,14 +47,20 @@ def load_model():
         )
         
         # Load LoRA adapter if provided
-        if LORA_ADAPTER_PATH and os.path.exists(LORA_ADAPTER_PATH):
-            print(f"[Info] [Backend] Loading LoRA adapter: {LORA_ADAPTER_PATH}...")
-            model.load_adapter(LORA_ADAPTER_PATH)
-        elif LORA_ADAPTER_PATH:
-            print(f"[Warning] [Backend] LoRA adapter path '{LORA_ADAPTER_PATH}' was specified but does not exist!")
-            backend_warning = f"LoRA adapter path '{LORA_ADAPTER_PATH}' not found. Loaded base model only."
+        if LORA_ADAPTER_PATH:
+            if os.path.exists(LORA_ADAPTER_PATH):
+                print(f"[Info] [Backend] Loading local LoRA adapter: {LORA_ADAPTER_PATH}...")
+                model.load_adapter(LORA_ADAPTER_PATH)
+            else:
+                print(f"[Info] [Backend] Local path not found. Loading Hugging Face LoRA adapter: {LORA_ADAPTER_PATH}...")
+                try:
+                    model.load_adapter(LORA_ADAPTER_PATH)
+                except Exception as ex:
+                    print(f"[Error] [Backend] Failed to load adapter from Hugging Face: {str(ex)}")
+                    backend_warning = f"Failed to load HF adapter '{LORA_ADAPTER_PATH}': {str(ex)}"
             
         # Enable 2x faster native inference
+
         if hasattr(FastVisionModel, "for_inference"):
             FastVisionModel.for_inference(model)
             

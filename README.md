@@ -89,19 +89,37 @@ This system demonstrates that a unified interface can support both tasks using a
 
 ## 💡 Connecting Your Fine-tuned Model (Unsloth)
 
-To run the model on your RTX 3090, you must configure the environment variables:
+To run the model on your RTX 3090, you must configure the environment variables. You can choose to load the model locally or host it on Hugging Face (recommended for zero-file transfer to VPS).
 
-1. **Extract your checkpoint**: Unzip the checkpoint file (e.g., `best_clean_htr_plain_exprate.zip` containing the LoRA adapter configurations `adapter_config.json`, `adapter_model.safetensors`, etc.) to a local directory, for example:
-   `j:/UnivHm_NextJS/checkpoints/best_clean_htr_plain_exprate`
-2. **Configure your `.env`**:
-   Disable mock mode, set the correct device, and define the base model path and LoRA adapter path:
+### Option A: Hosting the Adapter on Hugging Face (Recommended)
+1. In your local terminal, run the uploader utility:
+   ```bash
+   .venv\Scripts\python upload_to_hf.py
+   ```
+2. Enter your target Hugging Face repository ID (e.g., `editionhm/Leibniz-HTR-HMER-Adapter`) and your WRITE token (from [hf.co/settings/tokens](https://huggingface.co/settings/tokens)).
+3. The script will unzip your local checkpoint and upload it directly to Hugging Face.
+4. On your VPS, simply configure your `.env` like this:
    ```ini
    MOCK_MODE=false
    DEVICE=cuda
    LOAD_IN_4BIT=true
-   MODEL_NAME_OR_PATH=Qwen/Qwen2-VL-2B-Instruct
+   MODEL_NAME_OR_PATH=phxember/Uni-MuMER-Qwen3.5-2B
+   LORA_ADAPTER_PATH=editionhm/Leibniz-HTR-HMER-Adapter
+   ```
+   *The container will automatically download the adapter from Hugging Face at startup.*
+
+### Option B: Local File Checkpoint
+1. Extract your checkpoint ZIP file (e.g., `best_clean_htr_plain_exprate.zip`) to a local directory, for example:
+   `j:/UnivHm_NextJS/checkpoints/best_clean_htr_plain_exprate`
+2. Configure your `.env` to point to the local path:
+   ```ini
+   MOCK_MODE=false
+   DEVICE=cuda
+   LOAD_IN_4BIT=true
+   MODEL_NAME_OR_PATH=phxember/Uni-MuMER-Qwen3.5-2B
    LORA_ADAPTER_PATH=j:/UnivHm_NextJS/checkpoints/best_clean_htr_plain_exprate
    ```
+
 3. **Unsloth Installation Note**:
    Unsloth requires specialized installation depending on your PyTorch and CUDA versions. When running GPU inference, ensure Unsloth is installed in your python environment:
    ```bash
