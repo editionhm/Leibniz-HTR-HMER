@@ -29,8 +29,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install bitsandbytes (for 4-bit quantization) and xformers (for attention acceleration)
+# compatible with PyTorch 2.2.0 & CUDA 12.1
+RUN pip install --no-cache-dir bitsandbytes
+RUN pip install --no-cache-dir --no-deps xformers==0.0.24
+RUN pip install --no-cache-dir --no-deps trl peft upstream-unsloth
+RUN pip install --no-cache-dir "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
+
 # Copy FastAPI backend code
 COPY backend/app ./backend/app
+
 
 # Copy compiled frontend from Stage 1 into the path FastAPI expects
 COPY --from=frontend-builder /build/dist ./frontend/dist
